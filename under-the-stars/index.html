@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Under the Stars</title>
+  <meta name="description" content="A little universe, made with love.">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="theme-color" content="#050816">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 64 64%27%3E%3Crect width=%2764%27 height=%2764%27 rx=%2716%27 fill=%27%23141a52%27/%3E%3Cpath d=%27M32 10l5.5 16.5L54 32l-16.5 5.5L32 54l-5.5-16.5L10 32l16.5-5.5z%27 fill=%27%23ffbfe0%27/%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;600&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Jost:wght@300;400;500&display=swap">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body data-scene="0">
+
+  <canvas id="sky" aria-hidden="true"></canvas>
+  <div class="aurora" aria-hidden="true"></div>
+  <div class="moon" aria-hidden="true"><span></span></div>
+  <div class="vignette" aria-hidden="true"></div>
+
+  <!-- Persistent music controls (appear after the first tap) -->
+  <div class="music-bar" id="musicBar" role="group" aria-label="Music controls">
+    <button class="icon-btn" id="playBtn" type="button" aria-label="Play music" aria-pressed="false">
+      <svg class="i-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13l11-6.5z"/></svg>
+      <svg class="i-pause" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 5h3.5v14H7zM13.5 5H17v14h-3.5z"/></svg>
+    </button>
+    <div class="track">
+      <span class="eq" aria-hidden="true"><i></i><i></i><i></i></span>
+      <span class="track-text"><b id="trackTitle"></b><span id="trackArtist"></span></span>
+    </div>
+    <label class="vol">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9.5v5h3.5L12 18.5v-13L7.5 9.5zM15 8.5a5 5 0 0 1 0 7M17.5 6a8.5 8.5 0 0 1 0 12" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+      <input id="volume" type="range" min="0" max="100" step="1" value="60" aria-label="Volume">
+    </label>
+  </div>
+
+  <main id="stage">
+
+    <!-- SCENE 1 · THE MYSTERIOUS OPENING -->
+    <section class="scene" id="scene-0" aria-label="Opening">
+      <p class="brand"><span data-text="title"></span><em data-text="subtitle"></em></p>
+
+      <div class="envelope" id="envelope" aria-hidden="true">
+        <div class="env-glow"></div>
+        <div class="env-back"></div>
+        <div class="env-letter"><span></span><span></span><span></span></div>
+        <div class="env-front"></div>
+        <div class="env-flap"></div>
+        <div class="env-seal">&#10022;</div>
+      </div>
+
+      <div class="opening-text">
+        <p class="rtext line-1" id="line1" data-text="opening.line1"></p>
+        <p class="rtext line-2" id="line2" data-text="opening.line2"></p>
+      </div>
+      <button class="btn rtext" id="openBtn" type="button" data-text="opening.button"></button>
+    </section>
+
+    <!-- SCENE 2 · THE MUSIC EXPERIENCE -->
+    <section class="scene" id="scene-1" aria-label="Music" inert>
+      <p class="eyebrow" data-text="music.eyebrow"></p>
+      <h2 class="song-title" data-text="music.title"></h2>
+      <p class="song-artist"><span data-text="music.artist"></span></p>
+
+      <div class="player-card" id="playerCard">
+        <div class="player-frame"><div id="ytPlayer"></div></div>
+        <div class="player-fallback" id="playerFallback" hidden>
+          <p data-text="music.fallbackText"></p>
+          <a class="btn ghost" id="fallbackLink" target="_blank" rel="noopener noreferrer" data-text="music.fallbackButton"></a>
+        </div>
+      </div>
+      <p class="hint" data-text="music.hint"></p>
+      <button class="btn" type="button" data-next data-text="music.continue"></button>
+    </section>
+
+    <!-- SCENE 3 · HER PHOTOGRAPH REVEAL -->
+    <section class="scene" id="scene-2" aria-label="Photographs" inert>
+      <div class="reveal-stage" id="revealStage">
+        <div class="reveal-flash" aria-hidden="true"></div>
+        <div class="float-stars far" aria-hidden="true"></div>
+        <div class="frame-wrap">
+          <div class="frame-glow" aria-hidden="true"></div>
+          <div class="frame" id="frame">
+            <div class="photo-stack" id="photoStack"></div>
+          </div>
+          <div class="float-stars near" aria-hidden="true"></div>
+          <button class="arrow prev" id="photoPrev" type="button" aria-label="Previous photograph">&#8249;</button>
+          <button class="arrow next" id="photoNext" type="button" aria-label="Next photograph">&#8250;</button>
+        </div>
+      </div>
+      <p class="reveal-line rtext" id="revealLine" data-text="reveal.line"></p>
+      <div class="thumbs" id="thumbs" role="tablist" aria-label="Photographs"></div>
+      <button class="btn ghost" type="button" data-next data-text="reveal.continue"></button>
+    </section>
+
+    <!-- SCENE 4 · OUR LITTLE UNIVERSE -->
+    <section class="scene" id="scene-3" aria-label="Us" inert>
+      <h2 class="duo-title rtext" id="duoTitle"></h2>
+      <div class="duo-wrap" id="duoWrap">
+        <div class="constellation">
+          <svg viewBox="0 0 100 26" aria-hidden="true">
+            <polyline class="cl-line" pathLength="1" points="25,21 33,11 42,16 50,5 58,14 67,8 75,21"/>
+            <circle class="cs sm" cx="33" cy="11" r="0.7"/>
+            <circle class="cs sm" cx="42" cy="16" r="0.6"/>
+            <circle class="cs md" cx="50" cy="5" r="0.9"/>
+            <circle class="cs sm" cx="58" cy="14" r="0.6"/>
+            <circle class="cs sm" cx="67" cy="8" r="0.7"/>
+            <circle class="cs big a" cx="25" cy="21" r="1.7"/>
+            <circle class="cs big b" cx="75" cy="21" r="1.7"/>
+          </svg>
+        </div>
+        <div class="duo">
+          <figure class="portrait a"><div class="arch"><img id="duoMe" alt="" decoding="async"></div><figcaption id="capMe"></figcaption></figure>
+          <figure class="portrait b"><div class="arch"><img id="duoHer" alt="" decoding="async"></div><figcaption id="capHer"></figcaption></figure>
+        </div>
+      </div>
+      <p class="duo-caption rtext" id="duoCaption" data-text="universe.caption"></p>
+      <button class="btn ghost rtext" type="button" data-next data-text="universe.continue"></button>
+    </section>
+
+    <!-- SCENE 5 · THE LETTER -->
+    <section class="scene" id="scene-4" aria-label="Letter" inert>
+      <p class="eyebrow" data-text="letter.eyebrow"></p>
+      <div class="letter" id="letter">
+        <div class="letter-fold" id="letterFold"><span class="fold-label" id="foldLabel"></span></div>
+        <div class="letter-wrap" id="letterWrap">
+          <div class="letter-clip">
+            <div class="letter-paper"><div class="letter-body" id="letterBody" tabindex="0"></div></div>
+          </div>
+        </div>
+      </div>
+      <button class="btn" id="readBtn" type="button" data-text="letter.button"></button>
+      <button class="btn ghost rtext" id="letterNext" type="button" data-next data-text="letter.continue"></button>
+    </section>
+
+    <!-- SCENE 6 · THE ORIGINAL DEDICATION -->
+    <section class="scene" id="scene-5" aria-label="Dedication" inert>
+      <p class="eyebrow" data-text="dedication.eyebrow"></p>
+      <div class="lyric-stage" id="lyricStage" aria-live="polite"></div>
+      <div class="lyric-controls">
+        <button class="arrow small" id="lyricPrev" type="button" aria-label="Previous verse">&#8249;</button>
+        <div class="lyric-dots" id="lyricDots"></div>
+        <button class="arrow small" id="lyricNextBtn" type="button" aria-label="Next verse">&#8250;</button>
+      </div>
+      <p class="fineprint" data-text="dedication.note"></p>
+      <button class="btn ghost rtext" id="dedicationNext" type="button" data-next data-text="dedication.continue"></button>
+    </section>
+
+    <!-- SCENE 7 · THE FINAL SURPRISE -->
+    <section class="scene" id="scene-6" aria-label="Finale" inert>
+      <div class="finale-text">
+        <p class="rtext f-line1" id="fLine1"></p>
+        <p class="rtext f-line2" id="fLine2" data-text="finale.line2"></p>
+        <p class="rtext f-sign" id="fSign"></p>
+      </div>
+      <svg class="heart" id="heart" viewBox="0 0 120 120" aria-hidden="true"></svg>
+      <button class="btn ghost rtext" id="replayBtn" type="button" data-text="finale.replay"></button>
+    </section>
+
+  </main>
+
+  <nav class="nav" id="nav" aria-label="Experience navigation">
+    <button class="nav-back" id="navBack" type="button" aria-label="Previous scene">&#8249;</button>
+    <ol class="dots" id="dots"></ol>
+  </nav>
+
+  <noscript><p style="position:fixed;inset:0;display:grid;place-items:center;color:#fff;background:#050816;font-family:sans-serif;padding:2rem;text-align:center">This little universe needs JavaScript. Please turn it on and reload.</p></noscript>
+
+  <script src="config.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
